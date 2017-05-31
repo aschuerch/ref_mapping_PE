@@ -1,5 +1,7 @@
 This script performs 
-### Reference based mapping of fastq reads against a fasta reference, snp and indel calling and consensus calling.
+### Reference based mapping of fastq reads against a fasta reference
+### SNP and indel calling 
+### Consensus calling.
 It expects the reads and reference in a folder [project]_data
 
 Before execution of the script it might be necessary to 
@@ -12,9 +14,9 @@ create a new virtual environment with [bioconda](http://bioconda.github.io/) fro
 
 Activate the virtual environment with (only once for each session)
 
-```
- source activate samtools=0.1.19
 ```bash
+ source activate samtools=0.1.19
+```
 
 And run the script with
 
