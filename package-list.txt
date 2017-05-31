@@ -1,0 +1,12 @@
+# This file may be used to create an environment using:
+# $ conda create --name <env> --file <this file>
+# platform: linux-64
+java-jdk=8.0.92=1
+libgcc=5.2.0=0
+ncurses=5.9=10
+perl-threaded=5.22.0=10
+perl-vcftools-vcf=0.953=3
+samtools=0.1.19=2
+varscan=2.4.2=0
+vcftools=0.1.14=4
+zlib=1.2.8=3
