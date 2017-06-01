@@ -34,7 +34,7 @@ The folder /test_data/ contains test files. The test can be run with
 
 ```bash
 ./reference_based_mapping_PE.sh Test TestRef
-...
+```
 
 For your own samples, create a folder [project]_data and store your samples and reference there.
 
@@ -48,5 +48,9 @@ Both names should by given *without* ending(.fastq,.fna or .fas)
 
 # Remarks
 - Adjust the parameters of every tool to your need in the bash script
-- The script does not include quality control/ quality trimming
-- Filter the resulting vcf files if necessary
+- The script does not include quality control or quality trimming
+- You can filter the resulting vcf files if necessary, for example with varscan.
+```bash
+varscan filter -h
+```
+will give you a number of options
