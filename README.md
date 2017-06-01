@@ -1,4 +1,4 @@
-*Purpose
+#Purpose
 
 This script performs 
 -  *Reference based mapping of paired-end fastq reads against a fasta reference*
@@ -8,7 +8,7 @@ This script performs
 
 It expects the reads and reference in a folder [project]_data
 
-*Dependencies
+#Dependencies
 
 - [Bioconda](bioconda.github.io)
 
@@ -22,6 +22,12 @@ Activate the virtual environment with (only once for each session)
 
 ```bash
 source activate samtools=0.1.19
+```
+#Execution
+
+Change the permission of the script
+```bash
+chmod 755 reference_based_mapping_PE.sh
 ```
 
 The folder /test_data/ contains test files. The test can be run with
