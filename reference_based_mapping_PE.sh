@@ -8,14 +8,9 @@ if [ $# -eq 0 ]; then
     echo "
 # Anita Schurch May 2017
 # This small script performs reference based mapping, snp and indel calling and consensus calling.
-# t, define the folder where the input files are located. Set up the folder structure like this
-# project_data/
-# project_src/
-# project_env/
-# The samples should be located in project_data/folderX/name_of_sample.R1.fastq and project_data/folderX/name_of_sample.R2.fastq
-# The reference should be located in project_data/reference.fas
-# Thie script can be located in project_src/
-# If necessary create a new virtual environment with bioconda:
+# The samples should be located in [project_data]/folderX/name_of_sample.R1.fastq and project_data/folderX/name_of_sample.R2.fastq
+# The reference should be located in [project_data]/reference.fas
+# If might be necessary to create a new virtual environment with bioconda:
 
  conda create -y -n samtools=0.1.19 --file package-list.txt
 
