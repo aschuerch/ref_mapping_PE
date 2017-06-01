@@ -1,4 +1,4 @@
-#Purpose
+# Purpose
 
 This script performs 
 -  *Reference based mapping of paired-end fastq reads against a fasta reference*
@@ -8,7 +8,7 @@ This script performs
 
 It expects the reads and reference in a folder [project]_data
 
-#Dependencies
+# Dependencies
 
 - [Bioconda](bioconda.github.io)
 
@@ -23,7 +23,7 @@ Activate the virtual environment with (only once for each session)
 ```bash
 source activate samtools=0.1.19
 ```
-#Execution
+# Execution
 
 Change the permission of the script
 ```bash
@@ -46,3 +46,7 @@ Run the script with
 
 Both names should by given *without* ending(.fastq,.fna or .fas)
 
+# Remarks
+- Adjust the parameters of every tool to your need in the bash script
+- The script does not include quality control/ quality trimming
+- Filter the resulting vcf files if necessary
