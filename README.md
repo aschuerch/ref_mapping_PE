@@ -10,7 +10,7 @@ It expects the reads and reference in a folder [project]_data
 
 # Dependencies
 
-- [Bioconda](www.bioconda.github.io)
+- [Bioconda](http://www.bioconda.github.io)
 
 Further dependencies are described in package-list.txt. A virtual environment can be created with
 
