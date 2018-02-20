@@ -59,13 +59,13 @@ if [[ ! -d "$output" ]];then
 fi
 echo 'Output will be written to ' "$output"
 index=${ref%.*}
-sam=("$output"/"$1"_aln.sam)
-bam=("$output"/"$1"_aln.bam)
-cns=("$output"/"$1"_cns.fq)
-cnsfas=("$output"/"$1"_cns.fas)
-finalfas=("$output"/"$1".consensus.fas)
-vcfsnp=("$output"/"$1".snp.vcf)
-vcfindel=("$output"/"$1".indel.vcf)
+sam=("$output"/"$1"_"$2"_aln.sam)
+bam=("$output"/"$1"_"$2"_aln.bam)
+cns=("$output"/"$1"_"$2"_cns.fq)
+cnsfas=("$output"/"$1"_"$2"_cns.fas)
+finalfas=("$output"/"$1"_"$2".consensus.fas)
+vcfsnp=("$output"/"$1"_"$2".snp.vcf)
+vcfindel=("$output"/"$1"_"$2".indel.vcf)
 
 echo 'Mapping'
 bowtie2-build -f "$ref" "$index"
@@ -83,7 +83,7 @@ samtools mpileup -d 1000 -L 1000 -f "$ref" "$bam".sorted.bam |varscan mpileup2in
 
 echo 'Consensus creation'
 samtools mpileup -uf "$ref" "$bam".sorted.bam | bcftools view -cg - | vcfutils.pl vcf2fq > "$cns"
-seqtk seq -q 20 "$cns" > "$cnsfas"
+seqtk seq -A -q 15 "$cns" > "$cnsfas"
 #Replacement of the identifier of the new fasta file with the samplename.
 sed "1s/.*/>$1/" "$cnsfas" > "$finalfas"
 
