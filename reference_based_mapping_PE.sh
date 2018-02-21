@@ -38,15 +38,16 @@ R2_gz=$(find "$datapath" -name "$1"*R2*.fastq.gz)
 #ref=($datapath/*data/"$2".f*)
 ref=$(find "$datapath" -name "$2".fas -or -name "$2".fna)
 
-R1="$1"_R1.fastq
-R2="$1"_R2.fastq
+R1="$datapath"/"$1"_R1.fastq
+R2="$datapath"/"$1"_R2.fastq
 
-zcat $R1_gz >  "$1"_R1_untrimmed.fastq
-zcat $R2_gz >  "$1"_R2_untrimmed.fastq
+zcat $R1_gz >  "$datapath"/"$1"_R1_untrimmed.fastq
+zcat $R2_gz >  "$datapath"/"$1"_R2_untrimmed.fastq
 
 echo 'Quality control and trimming'
-seqtk fqchk  "$1"_R1_untrimmed.fastq >  "$R1"
-seqtk fqchk  "$1"_R2_untrimmed.fastq >  "$R2"
+seqtk trimfq  "$datapath"/"$1"_R1_untrimmed.fastq >  "$R1"
+seqtk trimfq  "$datapath"/"$1"_R2_untrimmed.fastq >  "$R2"
+
 
 ##Check for *fastqs
 for i in "$R1" "$R2" "$ref"
@@ -72,7 +73,6 @@ index=${ref%.*}
 sam=("$output"/"$1"_"$2"_aln.sam)
 bam=("$output"/"$1"_"$2"_aln.bam)
 cns=("$output"/"$1"_"$2"_cns.fq)
-cnsfas=("$output"/"$1"_"$2"_cns.fas)
 finalfas=("$output"/"$1"_"$2".consensus.fas)
 vcfsnp=("$output"/"$1"_"$2".snp.vcf)
 vcfindel=("$output"/"$1"_"$2".indel.vcf)
@@ -94,7 +94,10 @@ samtools mpileup -d 1000 -L 1000 -f "$ref" "$bam".sorted.bam |varscan mpileup2in
 
 echo 'Consensus creation'
 samtools mpileup -uf "$ref" "$bam".sorted.bam | bcftools view -cg - | vcfutils.pl vcf2fq > "$cns"
-seqtk seq -A -q 15 "$cns" > "$cnsfas"
+seqtk seq -A -q 15 "$cns" > "$finalfas"
 #Replacement of the identifier of the new fasta file with the samplename.
-sed "1s/.*/>$1/" "$cnsfas" > "$finalfas"
+
+
+rm "$cns"
+rm "$sam"
 
