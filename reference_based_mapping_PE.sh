@@ -73,6 +73,7 @@ index=${ref%.*}
 sam=("$output"/"$1"_"$2"_aln.sam)
 bam=("$output"/"$1"_"$2"_aln.bam)
 cns=("$output"/"$1"_"$2"_cns.fq)
+cnsfas=("$output"/"$1"_"$2"_cns.fas)
 finalfas=("$output"/"$1"_"$2".consensus.fas)
 vcfsnp=("$output"/"$1"_"$2".snp.vcf)
 vcfindel=("$output"/"$1"_"$2".indel.vcf)
@@ -94,10 +95,20 @@ samtools mpileup -d 1000 -L 1000 -f "$ref" "$bam".sorted.bam |varscan mpileup2in
 
 echo 'Consensus creation'
 samtools mpileup -uf "$ref" "$bam".sorted.bam | bcftools view -cg - | vcfutils.pl vcf2fq > "$cns"
-seqtk seq -A -q 15 "$cns" > "$finalfas"
-#Replacement of the identifier of the new fasta file with the samplename.
+seqtk seq -A  "$cns" > "$finalfas"
+##Replacement of the identifier of the new fasta file with the samplename.
+sed "1s/.*/>$1-$2/" "$cnsfas" > "$finalfas"
 
 
 rm "$cns"
+rm "$cnsfas"
 rm "$sam"
+rm "$bam"
+
+rm "$datapath"/"$1"_R1_untrimmed.fastq
+rm "$datapath"/"$1"_R2_untrimmed.fastq
+
+rm $R1
+rm $R2
+
 
