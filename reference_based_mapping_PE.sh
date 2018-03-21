@@ -96,9 +96,6 @@ samtools mpileup -d 1000 -L 1000 -f "$ref" "$bam".sorted.bam |varscan mpileup2in
 echo 'Consensus creation'
 samtools mpileup -uf "$ref" "$bam".sorted.bam | bcftools view -cg - | vcfutils.pl vcf2fq > "$cns"
 seqtk seq -A  "$cns" > "$finalfas"
-##Replacement of the identifier of the new fasta file with the samplename.
-sed "1s/.*/>$1-$2/" "$cnsfas" > "$finalfas"
-
 
 rm "$cns"
 rm "$cnsfas"
