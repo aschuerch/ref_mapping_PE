@@ -1,0 +1,81 @@
+#30 april 2018
+conda create -n iva iva python=3.5
+source activate iva
+iva -f ../RSV_data/UNK-BAB-IMI-102920_HVY3WAFXX_S62_L001_R1_001.fastq.gz -r ../RSV_data/UNK-BAB-IMI-102920_HVY3WAFXX_S62_L001_R2_001.fastq.gz ../output_ivatest
+
+## 3 contigs
+
+# 01052018
+
+for  i in ../RSV_data/UNK-BAB-IMI-102920*gz
+do echo seqtk trimfq -q 0.01 ../RSV_data/UNK-BAB-IMI-102920_HVY3WAFXX_S62_L004_R2_001.fastq.gz
+done
+
+
+guest@VM012073:~/Desktop/Anita/ref_mapping_PE/iva$ mkdir ../RSV_data/trimmed
+guest@VM012073:~/Desktop/Anita/ref_mapping_PE/iva$ mkdir ../RSV_data/concatenated
+
+guest@VM012073:~/Desktop/Anita/ref_mapping_PE/iva$ mv ../RSV_data/*trimmed.fastq ../RSV_data/trimmed/
+
+cat ../RSV_data/trimmed/*R1* > ../RSV_data/concatenated/UNK-BAB-IMI-102920_HVY3WAFXX_R1.trimmed.fastq
+cat ../RSV_data/trimmed/*R2* > ../RSV_data/concatenated/UNK-BAB-IMI-102920_HVY3WAFXX_R2.trimmed.fastq
+
+guest@VM012073:~/Desktop/Anita/ref_mapping_PE/iva$ ls -lat ../RSV_data/concatenated/
+total 183424
+-rw-rw-r-- 1 guest guest 92317636 Mai  1 10:32 UNK-BAB-IMI-102920_HVY3WAFXX_R2.trimmed.fastq
+drwxrwxr-x 2 guest guest     4096 Mai  1 10:32 .
+-rw-rw-r-- 1 guest guest 95497794 Mai  1 10:32 UNK-BAB-IMI-102920_HVY3WAFXX_R1.trimmed.fastq
+drwxrwxr-x 4 guest guest     4096 Mai  1 10:29 ..
+
+
+source activate iva
+
+iva -f ../RSV_data/concatenated/UNK-BAB-IMI-102920_HVY3WAFXX_R1.trimmed.fastq -r ../RSV_data/concatenated/UNK-BAB-IMI-102920_HVY3WAFXX_R2.trimmed.fastq ../output_ivatest/concatenated
+
+##20180502
+
+source activate iva
+conda install bwa=0.7.12
+
+bwa index contigs.fasta
+bwa mem contigs.fasta ../../RSV_data/concatenated/UNK-BAB-IMI-102920_HVY3WAFXX_R1.trimmed.fastq ../../RSV_data/concatenated/UNK-BAB-IMI-102920_HVY3WAFXX_R2.trimmed.fastq > NK-BAB-IMI-102920.aln.sam
+samtools view -bS NK-BAB-IMI-102920.aln.sam > NK-BAB-IMI-102920.aln.bam
+samtools sort NK-BAB-IMI-102920.aln.bam > NK-BAB-IMI-102920.sorted.bam
+samtools index NK-BAB-IMI-102920.sorted.bam
+samtools mpileup -uf contigs.fasta NK-BAB-IMI-102920.sorted.bam | bcftools call -mv > NK-BAB-IMI-102920.var.raw.vcf
+samtools mpileup --max-depth 10000 -uf contigs.fasta NK-BAB-IMI-102920.sorted.bam |bcftools call -mv > NK-BAB-IMI-102920.var.raw.vcf
+samtools mpileup --max-depth 10000 -uf contigs.fasta NK-BAB-IMI-102920.sorted.bam |bcftools call -c | vcfutils.pl vcf2fq > cns.fq
+
+seqtk seq -A cns.fq > cns.fas
+
+
+##second iteration
+
+2094  mkdir seconditeration
+ 2095  cd seconditeration/
+ 2096  cp ../cns.fas .
+ 2097  bwa index cns.fas 
+ 2098  bwa mem cns.fas ../../../RSV_data/concatenated/UNK-BAB-IMI-102920_HVY3WAFXX_R1.trimmed.fastq ../../../RSV_data/concatenated/UNK-BAB-IMI-102920_HVY3WAFXX_R2.trimmed.fastq > UNK-BAB-IMI-102920.aln.sam
+ 2099  samtools view -bS UNK-BAB-IMI-102920.aln.sam > UNK-BAB-IMI-102920.aln.bam && samtools sort UNK-BAB-IMI-102920.aln.bam > UNK-BAB-IMI-102920.sorted.bam
+ 2100  samtools index UNK-BAB-IMI-102920.sorted.bam 
+ 2101  samtools mpileup --max-depth 10000 -uf cns.fas UNK-BAB-IMI-102920.sorted.bam | bcftools call -mv > UNK-BAB-IMI-102920.var.raw.vcf
+ 2102  more UNK-BAB-IMI-102920.var.raw.vcf 
+
+-> no variants
+
+samtools mpileup --max-depth 10000 -uf cns.fas UNK-BAB-IMI-102920.sorted.bam |bcftools call -c | vcfutils.pl vcf2fq | seqtk seq -A > final_cns.fasta
+
+# repeat with second and third sample
+
+# alternative: map against closest reference + make new consensus
+
+# how to close gaps? align contigs against full genomes? how well does that work?
+
+20180515
+###########
+for i in *.fastq; do seqtk trimfq -q 0.001 UNK-BAB-IMI-102995_AHWYLWAFXX_S73_L004_R2_001.fastq > trimmed/UNK-BAB-IMI-102995_AHWYLWAFXX_S73_L004_R2_001.fastq; done
+mkdir trimmed
+for i in *.fastq; do seqtk trimfq -q 0.001 UNK-BAB-IMI-102995_AHWYLWAFXX_S73_L004_R2_001.fastq > trimmed/UNK-BAB-IMI-102995_AHWYLWAFXX_S73_L004_R2_001.fastq; done
+mkdir -p concatenated
+cat trimmed/UNK-BAB-IMI-103007_AHWYLWAFXX_S85_L00*R1* > concatenated/UNK-BAB-IMI-103007_R1.trimmed.fastq
+ for i in *; do echo iva --seed_ext_min_cov 5 -f test/concatenated/UNK-BAB-IMI-102920_HVY3WAFXX_R1.trimmed.fastq -r test/concatenated/UNK-BAB-IMI-102920_HVY3WAFXX_R2.trimmed.fastq ../output_test/; done
