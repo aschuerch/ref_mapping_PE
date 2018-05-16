@@ -1,6 +1,6 @@
 #/bin/bash
 
-set -e # uncomment for debugging
+#set -e # uncomment for debugging
 #set -x # uncomment for debugging
 
 
@@ -36,7 +36,7 @@ R1_gz=$(find "$datapath" -name "$1"*R1*.fastq.gz)
 #R2=($datapath/*data//"$1"*_R2*.f*)
 R2_gz=$(find "$datapath" -name "$1"*R2*.fastq.gz)
 #ref=($datapath/*data/"$2".f*)
-ref=$(find "$datapath" -name "$2".fas -or -name "$2".fna)
+ref=$(find "$datapath" -name "$2".fas -or -name "$2".fna -or -name "$2".fasta)
 
 R1="$datapath"/"$1"_R1.fastq
 R2="$datapath"/"$1"_R2.fastq
@@ -96,9 +96,10 @@ samtools mpileup -d 1000 -L 1000 -f "$ref" "$bam".sorted.bam |varscan mpileup2in
 echo 'Consensus creation'
 samtools mpileup -uf "$ref" "$bam".sorted.bam | bcftools view -cg - | vcfutils.pl vcf2fq > "$cns"
 seqtk seq -A  "$cns" > "$finalfas"
+sed -i "s/\>./\>$1\_$2/g"  "$finalfas"
+
 
 rm "$cns"
-rm "$cnsfas"
 rm "$sam"
 rm "$bam"
 
@@ -107,5 +108,3 @@ rm "$datapath"/"$1"_R2_untrimmed.fastq
 
 rm $R1
 rm $R2
-
-
